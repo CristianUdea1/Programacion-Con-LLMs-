@@ -1,6 +1,7 @@
 from sklearn.decomposition import PCA
 from sklearn.ensemble import IsolationForest
-
+import pandas as pd
+import numpy as np
 def generar_caso_de_uso():
     np.random.seed(7)
     # Generamos 50 registros de 4 sensores
