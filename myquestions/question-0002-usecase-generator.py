@@ -1,7 +1,7 @@
 from sklearn.decomposition import PCA
 from sklearn.ensemble import IsolationForest
 
-def generar_caso_iot():
+def generar_caso_de_uso():
     np.random.seed(7)
     # Generamos 50 registros de 4 sensores
     data = np.random.normal(0, 1, (50, 4))
