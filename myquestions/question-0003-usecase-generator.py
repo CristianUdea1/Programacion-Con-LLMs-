@@ -3,7 +3,7 @@ from sklearn.preprocessing import MinMaxScaler
 import pandas as pd
 import numpy as np
 
-def generar_caso_de_uso():
+def generar_caso_de_uso_0003():
     np.random.seed(42)
     data = {
         'precio': [10, -20, 15, 100, 110, 105, 5, 12],
