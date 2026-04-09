@@ -1,7 +1,7 @@
 from sklearn.cluster import KMeans
 from sklearn.preprocessing import MinMaxScaler
 
-def generar_caso_segmentacion():
+def generar_caso_de_uso():
     np.random.seed(42)
     data = {
         'precio': [10, -20, 15, 100, 110, 105, 5, 12],
