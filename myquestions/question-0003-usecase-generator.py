@@ -1,5 +1,7 @@
 from sklearn.cluster import KMeans
 from sklearn.preprocessing import MinMaxScaler
+import pandas as pd
+import numpy as np
 
 def generar_caso_de_uso():
     np.random.seed(42)
