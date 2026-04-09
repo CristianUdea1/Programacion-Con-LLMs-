@@ -4,7 +4,7 @@ from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import StandardScaler
 from sklearn.linear_model import Ridge
 
-def generar_caso_de_uso():
+def generar_caso_de_uso_0001():
     """
     Genera un caso de uso para el reto 'Predictor de Eficiencia de Combustible'.
     Retorna una tupla: (dict_argumentos, objeto_resultado_esperado)
@@ -67,7 +67,7 @@ def generar_caso_de_uso():
     return (argumentos, resultado_esperado)
 
 # --- EJEMPLO DE USO ---
-inputs, targets = generar_caso_de_uso()
+inputs, targets = generar_caso_de_uso_0001()
 
 print("--- ARGUMENTOS DE ENTRADA (Dataset) ---")
 print(inputs['df_autos'].head())
