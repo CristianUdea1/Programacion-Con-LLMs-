@@ -4,7 +4,7 @@ from sklearn.feature_extraction.text import CountVectorizer
 from sklearn.naive_bayes import MultinomialNB
 from sklearn.model_selection import train_test_split
 
-def generar_caso_nlp():
+def generar_caso_de_uso():
     """
     Genera un caso de uso para el reto de Análisis de Sentimiento.
     Retorna una tupla: (diccionario_argumentos, objeto_resultado_esperado)
@@ -67,7 +67,7 @@ def generar_caso_nlp():
 
 # --- Ejemplo de cómo llamar al generador y ver el contenido ---
 if __name__ == "__main__":
-    args, target = generar_caso_nlp()
+    args, target = generar_caso_de_uso()
     
     print("Dataset de entrada (primeras filas):")
     print(args["df_resenas"].head())
