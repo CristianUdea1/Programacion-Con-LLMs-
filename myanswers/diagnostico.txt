@@ -1,0 +1,92 @@
+--------------------------------------------------------------------
+ID 0097 - clasificar_urgencia(df, target_col)
+--------------------------------------------------------------------
+
+El generador (generar_caso_de_uso_preparar_datos) construye un
+DataFrame de solo 10 filas (línea fija, sin aleatoriedad en el
+tamaño) y aplica un split 80/20, lo que resulta en un test set de
+exactamente 2 muestras.
+
+El problema central está en la naturaleza estocástica de
+LogisticRegression: con solo 2 muestras en test y una variable
+target binaria aleatoria (random.randint(0, 1), línea del generador),
+es altamente probable que ambas clases no estén representadas en el
+train set, lo que puede causar que el modelo no converja o que
+predict() devuelva resultados inconsistentes entre ejecuciones.
+
+Adicionalmente, el generador no fija ninguna semilla aleatoria
+(random.seed) antes de construir el DataFrame, por lo que cada
+ejecución produce datos distintos e impredecibles, haciendo que
+la comparación entre el output del generador y el output de la
+solución sea no determinista.
+
+Mi solución sigue exactamente la lógica especificada en el enunciado:
+StandardScaler → train_test_split(test_size=0.2, random_state=42)
+→ LogisticRegression(max_iter=300) → cálculo de errores con np.where.
+
+--------------------------------------------------------------------
+ID 0099 - evaluar_finca(df, target_col)
+--------------------------------------------------------------------
+
+El generador (generar_caso_de_uso_evaluar_finca) usa n_rows =
+random.randint(10, 30), lo que puede producir DataFrames de tan
+solo 10 filas. Con un split 75/25 (random_state=7), el test set
+puede quedar con apenas 2 o 3 muestras.
+
+Con muestras tan pequeñas, el valor de R² (model.score) puede ser
+extremadamente inestable, llegando a valores negativos o muy
+alejados de los obtenidos en una ejecución previa del generador.
+Esto provoca que la comparación numérica entre el output esperado
+(calculado en el momento de generar) y el output de la solución
+(calculado al validar) diverja, aunque ambos usen exactamente
+el mismo código.
+
+El generador además usa coeficientes aleatorios para construir
+el precio (np.random.uniform en múltiples líneas), sin fijar
+np.random.seed, lo que hace que el DataFrame generado para
+comparar no sea reproducible entre la generación y la validación.
+
+Mi solución replica fielmente el enunciado:
+train_test_split(test_size=0.25, random_state=7) → Ridge(alpha=1.0)
+→ np.abs(y_test - y_pred) → dict con r2, mae_promedio, mae_maximo,
+mae_minimo.
+
+--------------------------------------------------------------------
+ID 0382 - procesar_datos_financieros(df, n_componentes)
+--------------------------------------------------------------------
+
+El generador (generar_caso_de_uso_preparar_datos_2) introduce
+outliers extremos multiplicando valores por random.randint(10, 50)
+y además introduce NaNs en posiciones aleatorias, todo sin fijar
+semilla aleatoria.
+
+El problema es que PowerTransformer (Yeo-Johnson) es sensible a
+la escala y distribución de los datos. Cuando los outliers son
+extremadamente grandes (factor 50x sobre una distribución
+exponencial con scale=50), la transformación puede producir
+resultados numéricamente inestables o warnings de convergencia
+que alteran los valores de salida.
+
+Si el generador calcula el output esperado en un momento y el
+validador ejecuta la solución en otro momento con datos generados
+de forma no determinista (sin semilla fija), los arrays resultantes
+del PCA no serán comparables, ya que PCA también depende de la
+distribución exacta de los datos de entrada.
+
+Mi solución sigue exactamente los pasos del enunciado:
+fillna(mean()) → PowerTransformer().fit_transform() →
+PCA(n_components=n_componentes).fit_transform() → retorno np.ndarray.
+
+====================================================================
+CONCLUSIÓN
+====================================================================
+
+Las tres soluciones implementan fielmente la lógica descrita en
+cada enunciado. Los errores de validación se originan en que los
+generadores de casos de uso no fijan semillas aleatorias globales
+(ni random.seed ni np.random.seed), produciendo datos no
+reproducibles entre el momento de generación del output esperado
+y el momento de ejecución de la solución por el validador.
+
+Esto encaja con lo que se dijo en plataforma y en correo sobre  del 
+enunciado: "puede deberse a errores ajenos a ti".
